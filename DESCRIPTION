@@ -1,0 +1,9 @@
+Package: LSdownloader
+Title: Download Sentinel & Landsat data via GEE
+Version: 0.0.0.9000
+Authors@R: Mariam Ansah
+Description: This package downloads satelitte data from GEE
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
