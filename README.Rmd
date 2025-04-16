@@ -18,7 +18,10 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of LSdownloader is to ...
+An R package for downloading and filtering satellite imagery from Google Earth Engine (GEE). Currently supports:
+
+- Landsat collections
+- Sentinel-2
 
 ## Installation
 

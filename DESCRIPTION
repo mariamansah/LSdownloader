@@ -1,11 +1,15 @@
 Package: LSdownloader
-Title: Download Sentinel & Landsat data via GEE
+Title: Download Sentinel & Landsat Data via GEE
 Version: 0.0.0.9000
-Authors@R:person("Mariam", "Ansah", email = "mariam-naa-odey.ansah@stud-mail.uni-wuerzburg.de", role = c("aut", "cre"))
-Description: This package downloads satelitte data from GEE
+Authors@R: person("Mariam", "Ansah", email = "mariam-naa-odey.ansah@stud-mail.uni-wuerzburg.de", role = c("aut", "cre"))
+Description: This package provides functions to download and process Sentinel and Landsat satellite data directly from Google Earth Engine (GEE).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports:
+    rgee,
+    terra
+
 
 

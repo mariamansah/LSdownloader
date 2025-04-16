@@ -7,54 +7,60 @@
 #' @param end_date End date (e.g. "2023-12-31")
 #' @param roi Numeric vector of [minLon, minLat, maxLon, maxLat]
 #' @param scale Resolution in meters (default is 30 for Landsat)
+#' @param via Method to fetch image:  "drive" ( safe export)
 #' @return A SpatRaster object
 #' @export
 
+for (pkg in c("googledrive", "stars", "future","sf", "geojsonio")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg)
+}
+
+
 getLandsatData <- function(start_date, end_date, roi, scale = 30) {
+  if (!requireNamespace("googledrive", quietly = TRUE)) {
+    install.packages("googledrive")
+  }
+  
   library(rgee)
   library(terra)
+  library(googledrive)
   
-  ee_Initialize()
+  ee_Initialize(drive = TRUE)
   
   ee_roi <- ee$Geometry$Rectangle(roi)
   
-  collection <- ee$ImageCollection("LANDSAT/LC08/C02/T1_L2")$
+  
+  image <- ee$ImageCollection("LANDSAT/LC08/C02/T1_L2")$
     filterBounds(ee_roi)$
     filterDate(start_date, end_date)$
     map(function(img) {
       qa <- img$select("QA_PIXEL")
-      mask <- qa$bitwiseAnd(1 < 3)$eq(0)  # Cloud bit = 0 (clear)
+      mask <- qa$bitwiseAnd(ee$Number(1)$leftShift(3))$eq(0)
       img$updateMask(mask)
     })$
-    median()
+    median()$
+    select(c("SR_B.*", "ST_B.*"))
   
-  
-  # Get download URL
-  url <- collection$getDownloadURL(list(
-    region = ee_roi$coordinates(),
+  ee_as_rast(
+    image = image,
+    region = ee_roi,
     scale = scale,
-    format = "GeoTIFF"
-  ))
-  
-  # Download the image to a temporary file
-  temp_file <- tempfile(fileext = ".tif")
-  download.file(url, temp_file, mode = "wb")
-  
-  # Read into R as a SpatRaster
-  raster_img <- terra::rast(temp_file)
-  return(raster_img)
+    via = "drive"
+  )
 }
+  
 
 
 
 
-#' Get Sentinel-2 Data from GEE with Cloud Filtering
+
+#' Get Sentinel-2 Data from GEE 
 #' 
 #' @param roi Numeric vector of [minLon, minLat, maxLon, maxLat]
 #' @param start_date Start date as string (YYYY-MM-DD)
 #' @param end_date End date as string (YYYY-MM-DD)
-#' @param cloud_perc Cloud cover threshold (0-100)
 #' @param scale Scale/resolution in meters 10m for sentinel
+#' @param via Method to fetch image:  "drive" ( safe export)
 #' @return A sentinel 2 image
 #' @export
 
@@ -69,33 +75,32 @@ getSentinelData <- function(start_date, end_date, roi, scale = 10) {
   
   # Sentinel-2 surface reflectance collection
   col <- ee$ImageCollection("COPERNICUS/S2_SR")$
-    filterBounds(roi)$
+    filterBounds(ee_roi)$
     filterDate(start_date, end_date)$
-    filter(ee$Filter$lt('CLOUDY_PIXEL_PERCENTAGE', cloud_perc))$
     map(function(img) {
       # Cloud masking using QA60
       qa <- img$select("QA60")
-      mask <- qa$bitwiseAnd(1 < 10)$eq(0)$And(
-        qa$bitwiseAnd(1 < 11)$eq(0)
+      mask <- qa$bitwiseAnd(ee$Number(1)$leftShift(10))$eq(0)$And(
+        qa$bitwiseAnd(ee$Number(1)$leftShift(11))$eq(0)
       )
       img$updateMask(mask)
     })$
     median()
   
   # Get download URL
-  urls <- col$getDownloadURL(list(
-    region = ee_roi$coordinates(),
+  url <- col$getDownloadURL(list(
+    region = ee_roi,
     scale = scale,
     format = "GeoTIFF"
   ))
   
   # Download the image to a temporary file
-  tempFile <- tempfile(fileext = ".tif")
-  download.file(url, tempFile, mode = "wb")
+  tempfilepath <- tempfile(fileext = ".tif")
+  download.file(url, tempfilepath, mode = "wb")
   
   # Read into R as a SpatRaster
-  raster_imgg <- terra::rast(tempFile)
-  return(raster_imgg)
+  raster_img <- terra::rast(tempfilepath)
+  return(raster_img)
 } 
 
 
