@@ -1,5 +1,3 @@
-library(reticulate)
-use_python("C:/Users/mariam/anaconda3/envs/rgee/python.exe", required = TRUE)
 
 
 #' Download Landsat Image as Raster
