@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 74c45b7b5ee84a8bb2af5e30fe46bfedccf548e7
 
 #' Download Landsat Image as Raster
 #'
