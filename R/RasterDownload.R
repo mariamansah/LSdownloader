@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 74c45b7b5ee84a8bb2af5e30fe46bfedccf548e7
 
 #' Download Landsat Image as Raster
 #'
@@ -70,15 +66,21 @@ getLandsatData <- function(start_date, end_date, roi, scale = 30) {
 
 
 getSentinelData <- function(start_date, end_date, roi, scale = 10) {
+  if (!requireNamespace("googledrive", quietly = TRUE)) {
+    install.packages("googledrive")
+  }
+  
   library(rgee)
   library(terra)
+  library(googledrive)
   
-  ee_Initialize()
+  ee_Initialize(drive = TRUE)
   
   ee_roi <- ee$Geometry$Rectangle(roi)
   
   # Sentinel-2 surface reflectance collection
-  col <- ee$ImageCollection("COPERNICUS/S2_SR")$
+  collection <- image_collection <- ee$ImageCollection("COPERNICUS/S2_SR")$
+    filter(ee$Filter$listContains("system:band_names", "QA60"))$
     filterBounds(ee_roi)$
     filterDate(start_date, end_date)$
     map(function(img) {
@@ -88,23 +90,19 @@ getSentinelData <- function(start_date, end_date, roi, scale = 10) {
         qa$bitwiseAnd(ee$Number(1)$leftShift(11))$eq(0)
       )
       img$updateMask(mask)
-    })$
-    median()
+    })
   
-  # Get download URL
-  url <- col$getDownloadURL(list(
+  # Take median and cast explicitly as ee$Image
+  image <- ee$Image(collection$median()$select("B.*"))
+  
+  ee_as_rast(
+    image = image,
     region = ee_roi,
     scale = scale,
-    format = "GeoTIFF"
-  ))
-  
-  # Download the image to a temporary file
-  tempfilepath <- tempfile(fileext = ".tif")
-  download.file(url, tempfilepath, mode = "wb")
-  
-  # Read into R as a SpatRaster
-  raster_img <- terra::rast(tempfilepath)
-  return(raster_img)
-} 
+    via = "drive"
+  )
+}
+
+
 
 

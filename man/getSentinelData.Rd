@@ -2,7 +2,7 @@
 % Please edit documentation in R/RasterDownload.R
 \name{getSentinelData}
 \alias{getSentinelData}
-\title{Get Sentinel-2 Data from GEE with Cloud Filtering}
+\title{Get Sentinel-2 Data from GEE}
 \usage{
 getSentinelData(start_date, end_date, roi, scale = 10)
 }
@@ -15,11 +15,11 @@ getSentinelData(start_date, end_date, roi, scale = 10)
 
 \item{scale}{Scale/resolution in meters 10m for sentinel}
 
-\item{cloud_perc}{Cloud cover threshold (0-100)}
+\item{via}{Method to fetch image:  "drive" ( safe export)}
 }
 \value{
 A sentinel 2 image
 }
 \description{
-Get Sentinel-2 Data from GEE with Cloud Filtering
+Get Sentinel-2 Data from GEE
 }

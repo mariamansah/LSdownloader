@@ -1,26 +1,46 @@
+# LSdownloader   
+Download and process Landsat & Sentinel-2 data from Google Earth Engine (GEE) into R
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+---
 
-# LSdownloader
+##  Overview
 
-<!-- badges: start -->
-<!-- badges: end -->
+`LSdownloader` provides two simple R functions:
 
-An R package for downloading and filtering satellite imagery from Google
-Earth Engine (GEE). Currently supports:
+- `getLandsatData()` – Download cloud-masked Landsat 8 imagery  
+- `getSentinelData()` – Download cloud-masked Sentinel-2 imagery  
 
-- Landsat collections
-- Sentinel-2
+- The package leverages [`rgee`](https://github.com/r-spatial/rgee) and Google Earth Engine to fetch satellite imagery 
+- Using `ee_as_rast()` with Google Drive exports
+- Loading directly into R as a `SpatRaster`.
+
+---
+
+## Dependencies
+
+The package automatically installs the following if missing:
+
+- `rgee` 
+- `terra` 
+- `googledrive` 
+- `stars`, `future`, `sf`, `geojsonio` for raster handling
+
+---
 
 ## Installation
 
-You can install the development version of LSdownloader from
-[GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-pak::pak("mariamansah/LSdownloader")
+```r
+devtools::install_github("mariamansah/LSdownloader")
 ```
+## Workflow
+
+Load package
+```r
+library(LSdownloader)
+library(rgee)
+ee_Initialize(drive = TRUE)
+```
+Authenticate with Earth Engine and Google Drive
 
 ## Example
 
@@ -28,29 +48,28 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(LSdownloader)
-## basic example code
+
+my_roi <- c(-0.25, 5.50, 0.10, 5.70) #Accra  # Define your area of interest
+
+landsat_img <- getLandsatData("2023-01-01", "2023-12-31", my_roi)
+sentinel_img <- getSentinelData("2023-01-01", "2023-12-31", my_roi)
+
+# Visualize Landsat RGB
+plotRGB(landsat_img, r = 4, g = 3, b = 2, stretch = "lin")
+
+# Visualize Sentinel RGB
+plotRGB(sentinel_img, r = 4, g = 3, b = 2, stretch = "lin")
+
 ```
+## Notes
+- Downloaded files are temporary unless manually saved.
+- Exports occur via Google Drive, so ensure adequate space & connection.
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## Future Advances
+getSentinelData() uses QA60 for masking for better accuracy possible using COPERNICUS/S2_CLOUD_PROBABILITY.
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+## Author
+Mariam Ansah
+Email: mariam-naa-odey.ansah@stud-mail.uni-wuerzburg.de
+License: MIT
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.

@@ -14,6 +14,8 @@ getLandsatData(start_date, end_date, roi, scale = 30)
 \item{roi}{Numeric vector of \link{minLon, minLat, maxLon, maxLat}}
 
 \item{scale}{Resolution in meters (default is 30 for Landsat)}
+
+\item{via}{Method to fetch image:  "drive" ( safe export)}
 }
 \value{
 A SpatRaster object
