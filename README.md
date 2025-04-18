@@ -1,7 +1,6 @@
 # LSdownloader
 
-Download and process Landsat & Sentinel-2 data from Google Earth Engine
-(GEE) into R
+Download Landsat & Sentinel-2 data from Google Earth Engine (GEE) into R
 
 ------------------------------------------------------------------------
 
@@ -52,8 +51,6 @@ ee_Initialize(drive = TRUE)
 Authenticate with Earth Engine and Google Drive
 
 ## Example
-
-This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(LSdownloader)
