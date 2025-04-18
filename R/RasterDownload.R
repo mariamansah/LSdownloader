@@ -1,3 +1,8 @@
+for (pkg in c("googledrive", "stars", "future","sf", "geojsonio")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg)
+}
+
+
 
 #' Download Landsat Image as Raster
 #'
@@ -10,10 +15,6 @@
 #' @param via Method to fetch image:  "drive" ( safe export)
 #' @return A SpatRaster object
 #' @export
-
-for (pkg in c("googledrive", "stars", "future","sf", "geojsonio")) {
-  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg)
-}
 
 
 getLandsatData <- function(start_date, end_date, roi, scale = 30) {
@@ -49,10 +50,6 @@ getLandsatData <- function(start_date, end_date, roi, scale = 30) {
   )
 }
   
-
-
-
-
 
 #' Get Sentinel-2 Data from GEE 
 #' 
