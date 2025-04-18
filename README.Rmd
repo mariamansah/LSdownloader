@@ -69,9 +69,11 @@ plotRGB(sentinel_img, r = 4, g = 3, b = 2, stretch = "lin")
 
 ```
 ## Plots
-<pre><code>```{r landsat-example, echo=TRUE, fig.align="center", out.width="100%"} library(LSdownloader) library(terra) library(rgee) ee_Initialize(drive = TRUE) aoi <- c(-0.25, 5.50, 0.10, 5.70) landsat_img <- getLandsatData("2023-01-01", "2023-12-31", roi = aoi) plotRGB(landsat_img, r = 4, g = 3, b = 2, stretch = "lin") ```</code></pre>
+Landsat 8 satellite image of Accra
+![landsat_img!](C:/Users/mariam/Desktop/msc/eo_programming/LSdownloader/Rplot.png)
 
-<pre><code>```{r sentinel-example, echo=FALSE, message=FALSE, warning=FALSE, fig.align="center", out.width="100%"} library(LSdownloader) library(rgee) library(terra) ee_Initialize(drive = TRUE) aoi <- c(-0.25, 5.50, 0.10, 5.70) sentinel_img <- getSentinelData("2023-01-01", "2023-12-31", roi = aoi) plotRGB(sentinel_img, r = 4, g = 3, b = 2, stretch = "lin") ``` </code></pre>
+Sentinel-2 satellite image of Accra
+![sentinel_img](C:/Users/mariam/Desktop/msc/eo_programming/LSdownloader/Rplot01.png)
 
 
 ## Notes
